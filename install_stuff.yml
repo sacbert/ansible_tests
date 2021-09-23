@@ -4,38 +4,23 @@
   become: true
   tasks:
 
-  - name: update apk cache
+  - name: install apache2 and PHP package
     apt: 
+      name: 
+        - apache2
+        - libapache2-mod-php
+        - tmux
+        - vim-nox 
+      state: latest
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
   - name: install apache package
-    apt: 
-      name: apache2
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: add php support
-    apt: 
-      name: libapache2-mod-php
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: add vim-nox
-    apt: 
-      name: vim-nox
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: add tmux
-    apt: 
-      name: tmux
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: install apache package
     dnf: 
-      name: httpd
+      name: 
+        - httpd
+        - php 
       state: latest
+      update_cache: yes
     when: ansible_distribution == "CentOS"
 
