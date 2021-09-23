@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Check disk space
+    shell: df -k --output\=avail | tail -1
+    register: freespace
+    when: ansible_distribution == "Ubuntu"
+
