@@ -4,10 +4,27 @@
   become: true
   tasks:
 
-  - name: Create savila Users
+# OS UPDATE
+#
+  - name: Install Updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Install Updates (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+# PRIVILEGED USERS
+#
+  - name: Create ansible User
     tags: always
     user:
-      name: savila
+      name: ansible
       password: '$6$UsTmyff0ldY6ka$EgP4xto0.QrSKMum/wnsw/SDniFUkHvuv7LVkEkzmvH4xVRMJAYOe.IuUBkDC6HUbR2/hvehhQe8z44kN.TQs.'
       groups: 
         - sudo
@@ -15,20 +32,20 @@
       shell: /bin/bash
       system: no
       createhome: yes
-      home: /home/savila
+      home: /home/ansible
     when: ansible_distribution == "Ubuntu"
 
-  - name: add ssh key for savila
+  - name: add ssh key for ansible
     tags: always
     authorized_key:
-      user: savila
+      user: ansible
       key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrLCaYEH/zhBpi8bedZUhURfnSWhNAvARf0yDhShs/D Ansible" 
 
-  - name: add sudoers file for savila
+  - name: add sudoers file for ansible
     tags: always
     copy:
-      src: sudoers_savila
-      dest: /etc/sudoers.d/savila
+      src: sudoers_ansible
+      dest: /etc/sudoers.d/ansible
       owner: root
       group: root
       mode: 0440

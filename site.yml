@@ -1,25 +1,29 @@
 ---
 
+#
+# GENERAL 
+#
 - hosts: all
   become: true
   pre_tasks:
 
-  - name: install updates (CentOS)
+  - name: update repo cache (CentOS)
     tags: always
     dnf:
-      update_only: yes
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "CentOS"
 
-  - name: install updates (Ubuntu)
+  - name: update repo cache (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
 
+#
 # WORKSTATIONS
-
+#
 - hosts: workstations
   become: true
   tasks:
@@ -62,6 +66,18 @@
       update_cache: yes
     when: ansible_distribution == "Ubuntu"
 
+#   
+# WEBSERVERS
+# Web Server Service Start
+#
+#  - name: Restart httpd (Ubuntu)
+    #    tags: apache, ubuntu, httpd
+#      service: 
+#      name: apache2
+#      state: started
+#      enable: yes
+#    when: ansible_distribution == "Ubuntu"
+
   - name: install apache package
     tags: apache, centos, httpd
     dnf: 
@@ -80,7 +96,9 @@
       owner: root
       group: root
       mode: 644
-
+#
+# DB SERVERS
+#
 - hosts: db_servers
   become: true
   tasks: 
@@ -99,6 +117,9 @@
       state: latest
     when: ansible_distribution == "Ubuntu"
 
+#
+# FILE SERVERS
+#
 - hosts: file_servers
   become: true
   tasks:
